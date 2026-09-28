@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>தமிழ் உலகப் பயணம் – Tamil Adventure World</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans Tamil","Latha","Nirmala UI",Arial,sans-serif;background:#08152f;color:#fff;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:0}
+#app{min-height:100vh;background:
+ radial-gradient(circle at 15% 15%,#244c9b 0,transparent 30%),
+ radial-gradient(circle at 85% 20%,#7b2db4 0,transparent 28%),
+ linear-gradient(145deg,#07132d,#132e62 55%,#1d0d45)}
+.screen{display:none;min-height:100vh;padding:24px}.screen.active{display:block}
+.glass{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(14px);border-radius:24px;box-shadow:0 20px 60px #0005}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}
+.logo{font-size:clamp(22px,4vw,38px);font-weight:900;text-shadow:0 4px 15px #0007}
+.logo span{color:#ffd54a}.stats{display:flex;gap:8px;flex-wrap:wrap}.pill{padding:10px 14px;border-radius:14px;background:#0005;font-weight:800}
+.hero{max-width:1100px;margin:4vh auto 0;text-align:center;padding:45px 25px}
+.avatar{width:110px;height:110px;border-radius:50%;margin:auto;display:grid;place-items:center;font-size:58px;background:linear-gradient(135deg,#ffd54a,#ff7b54);box-shadow:0 15px 40px #0007}
+h1{font-size:clamp(32px,6vw,68px);margin:18px 0 5px}.subtitle{font-size:20px;color:#d8e4ff}
+.primary{padding:15px 28px;border-radius:16px;background:linear-gradient(135deg,#ffcf33,#ff7a59);color:#201000;font-weight:900;font-size:18px;box-shadow:0 10px 25px #0005}
+.world{max-width:1200px;margin:auto}.worldgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+.area{min-height:190px;padding:22px;position:relative;overflow:hidden;transition:.2s}.area:hover{transform:translateY(-6px);border-color:#ffd54a}
+.area .icon{font-size:48px}.area h3{margin:10px 0 5px;font-size:23px}.area p{color:#cbd8f4;margin:0}.go{position:absolute;right:18px;bottom:18px;background:#ffffff18;color:#fff;padding:9px 14px;border-radius:12px;font-weight:800}
+.sectionTitle{margin:10px 0 20px;font-size:30px}
+.gamebox{max-width:950px;margin:30px auto;padding:28px;text-align:center}
+.question{font-size:clamp(25px,5vw,44px);font-weight:900;margin:20px 0 28px}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
+.choice{min-height:100px;border-radius:20px;background:linear-gradient(145deg,#244f99,#45208c);color:#fff;font-size:24px;font-weight:900;border:2px solid transparent;box-shadow:0 12px 25px #0004;transition:.18s}
+.choice:hover{transform:scale(1.03);border-color:#ffd54a}
+.feedback{min-height:50px;margin:22px;font-size:24px;font-weight:900}.correct{color:#7dffb2}.wrong{color:#ffb2b2}
+.progress{height:12px;background:#0005;border-radius:20px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,#ffd54a,#ff6b6b);width:0;transition:.4s}
+.back{background:#ffffff16;color:#fff;padding:10px 15px;border-radius:12px;font-weight:800}
+.object-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}.object{padding:20px;font-size:62px;border-radius:20px;background:#ffffff12}.object b{display:block;font-size:20px;margin-top:8px}
+.letter-grid{display:flex;flex-wrap:wrap;gap:15px;justify-content:center}.letter{width:90px;height:90px;border-radius:20px;background:linear-gradient(145deg,#174b90,#7a2db0);display:grid;place-items:center;font-size:44px;font-weight:900;box-shadow:0 10px 25px #0004}.letter:hover{transform:translateY(-5px)}
+.wordblocks{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:25px}.block{width:90px;height:90px;background:#ffcf33;color:#241600;border-radius:18px;display:grid;place-items:center;font-size:35px;font-weight:900}
+.reading-card{font-size:38px;padding:35px;border-radius:20px;background:#ffffff12;margin-bottom:20px}
+.badges{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px}.badge{padding:25px;text-align:center;border-radius:20px;background:#ffffff10}.badge .medal{font-size:55px}
+.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%) translateY(120px);background:#101c3d;border:1px solid #ffffff30;padding:15px 24px;border-radius:16px;font-weight:900;transition:.35s;z-index:20}.toast.show{transform:translateX(-50%) translateY(0)}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:19}.piece{position:absolute;width:10px;height:18px;animation:fall 1.5s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@media(max-width:650px){.screen{padding:14px}.hero{padding:30px 15px}.stats{justify-content:center}.top{align-items:flex-start;flex-direction:column}.choice{min-height:80px}}
+</style>
+</head>
+<body>
+<div id="app">
+<section id="home" class="screen active">
+  <div class="hero glass">
+    <div class="avatar">🧑🏽‍🏫</div>
+    <h1>தமிழ் உலகப் பயணம்</h1>
+    <div class="subtitle">Tamil Adventure World · தமிழ் ஆண்டு 1</div>
+    <p>🌟 கற்றுக்கொள் · 🎮 விளையாடு · 🏆 வெற்றி பெறு</p>
+    <button class="primary" onclick="startGame()">🚀 பயணத்தைத் தொடங்கு</button>
+  </div>
+</section>
+
+<section id="world" class="screen">
+ <div class="world">
+  <div class="top"><div class="logo">தமிழ் <span>உலகப் பயணம்</span></div><div class="stats" id="stats"></div></div>
+  <div class="glass" style="padding:22px;margin-bottom:20px">
+   <div style="font-size:22px;font-weight:900">🧑🏽‍🏫 ஆசிரியர்</div>
+   <div id="welcome" style="font-size:18px;margin-top:8px">வணக்கம்! தமிழ் உலகத்திற்கு வரவேற்கிறோம்!</div>
+  </div>
+  <h2 class="sectionTitle">🗺️ தமிழ் கற்றல் தீவு</h2>
+  <div class="worldgrid">
+   <div class="area glass"><div class="icon">🌳</div><h3>எழுத்துக் காடு</h3><p>தமிழ் எழுத்துகளைத் தேடு.</p><button class="go" onclick="letterGame()">விளையாடு →</button></div>
+   <div class="area glass"><div class="icon">🐘</div><h3>பட உலகம்</h3><p>படத்தையும் சொல்லையும் பொருத்து.</p><button class="go" onclick="pictureGame()">விளையாடு →</button></div>
+   <div class="area glass"><div class="icon">🧩</div><h3>சொல் கிராமம்</h3><p>எழுத்துகளை இணைத்து சொல் உருவாக்கு.</p><button class="go" onclick="wordGame()">விளையாடு →</button></div>
+   <div class="area glass"><div class="icon">🎧</div><h3>கேட்டு கண்டுபிடி</h3><p>கேட்டு சரியான சொல்லைக் கண்டுபிடி.</p><button class="go" onclick="listenGame()">விளையாடு →</button></div>
+   <div class="area glass"><div class="icon">📖</div><h3>வாசிப்பு நகரம்</h3><p>எளிய சொற்கள் மற்றும் வாக்கியங்கள்.</p><button class="go" onclick="readingGame()">விளையாடு →</button></div>
+   <div class="area glass"><div class="icon">🏃</div><h3>தமிழ் OBBY</h3><p>சரியான எழுத்துகளில் குதி.</p><button class="go" onclick="obbyGame()">விளையாடு →</button></div>
+   <div class="area glass"><div class="icon">🏰</div><h3>வினாடி வினா கோட்டை</h3><p>எளிது → நடுத்தரம் → கடினம்.</p><button class="go" onclick="quizMenu()">விளையாடு →</button></div>
+   <div class="area glass"><div class="icon">🏆</div><h3>வெற்றி அரங்கம்</h3><p>உன் மதிப்பெண் மற்றும் பதக்கங்களைப் பார்.</p><button class="go" onclick="victory()">திறக்க →</button></div>
+  </div>
+ </div>
+</section>
+
+<section id="game" class="screen">
+ <div class="top"><button class="back" onclick="show('world')">← தமிழ் உலகம்</button><div class="logo">🎮 தமிழ் சவால்</div><div id="gameStats" class="stats"></div></div>
+ <div class="gamebox glass">
+   <div id="gameTitle" class="sectionTitle"></div>
+   <div id="gameContent"></div>
+ </div>
+</section>
+</div>
+<div id="toast" class="toast"></div><div id="confetti" class="confetti"></div>
+
+<script>
+const state={score:0,stars:0,streak:0,lives:3,level:1,answered:0,correct:0};
+const $=id=>document.getElementById(id);
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');updateStats()}
+function startGame(){show('world'); toast('🌟 உன் தமிழ் பயணம் தொடங்கியது!');}
+function updateStats(){const s=`⭐ ${state.stars} &nbsp; 💎 ${state.score} &nbsp; 🔥 ${state.streak} &nbsp; ❤️ ${state.lives} &nbsp; 🏆 ${state.level}`; if($('stats'))$('stats').innerHTML=s;if($('gameStats'))$('gameStats').innerHTML=s}
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
+function celebrate(){for(let i=0;i<70;i++){let p=document.createElement('i');p.className='piece';p.style.left=Math.random()*100+'%';p.style.top='-20px';p.style.background=['#ffd54a','#ff6b6b','#67e8f9','#a78bfa','#7dffb2'][i%5];p.style.animationDelay=Math.random()*.4+'s';$('confetti').appendChild(p);setTimeout(()=>p.remove(),2000)}}
+function reward(points=10){state.score+=points;state.stars++;state.streak++;state.answered++;state.correct++;if(state.streak%5===0){state.score+=10;toast('🔥 தொடர்ச்சியான வெற்றிக்கு +10 போனஸ்!')}updateStats()}
+function fail(){state.streak=0;state.lives=Math.max(0,state.lives-1);state.answered++;updateStats()}
+function finish(text='சரியான விடை!'){reward();toast('🎉 '+text);celebrate()}
+function setup(title,html){show('game');$('gameTitle').textContent=title;$('gameContent').innerHTML=html;updateStats()}
+
+function letterGame(){
+setup('🌳 எழுத்துக் காடு',`<div class="question">“அ” என்ற எழுத்தைக் கண்டுபிடி!</div><div class="letter-grid">${['ஆ','அ','ம','ப','இ','உ'].map(x=>`<button class="letter" onclick="pickLetter('${x}')">${x}</button>`).join('')}</div><div id="feedback" class="feedback"></div>`);
+}
+function pickLetter(x){if(x==='அ'){finish('சரியான விடை! ⭐ +10');$('feedback').innerHTML='<span class="correct">🌟 அருமை! “அ” சரியான எழுத்து.</span>'}else{fail();$('feedback').innerHTML='<span class="wrong">😊 மீண்டும் முயற்சி செய்!</span>'}}
+
+const pictures=[['🐘','யானை'],['🐄','மாடு'],['🐐','ஆடு'],['🐟','மீன்'],['🌸','பூ'],['🏠','வீடு'],['🌳','மரம்']];
+function pictureGame(){let target=pictures[Math.floor(Math.random()*pictures.length)];setup('🐘 பட உலகம்',`<div class="question">${target[1]} என்பதைக் கண்டுபிடி!</div><div class="object-grid">${pictures.map(p=>`<button class="object" onclick="pickPicture('${p[1]}','${target[1]}')">${p[0]}<b>${p[1]}</b></button>`).join('')}</div><div id="feedback" class="feedback"></div>`)}
+function pickPicture(x,t){if(x===t){finish('சூப்பர்! சரியான படம்!')}else{fail();$('feedback').innerHTML='<span class="wrong">😊 மீண்டும் முயற்சி செய்!</span>'}}
+
+const words=[['ஆ','டு','ஆடு'],['மா','டு','மாடு'],['பூ','','பூ']];
+let wi=0;
+function wordGame(){let w=words[wi%words.length];setup('🧩 சொல் கிராமம்',`<div class="question">எழுத்துகளை இணைத்து சொல்லை உருவாக்கு</div><div class="wordblocks">${w[0]?`<button class="block" onclick="wordPick(0)">${w[0]}</button>`:''}${w[1]?`<button class="block" onclick="wordPick(1)">${w[1]}</button>`:''}</div><div id="feedback" class="feedback">சொல்: <b id="built">_</b></div>`);window.built='';}
+function wordPick(i){let w=words[wi%words.length];window.built+=(i===0?w[0]:w[1]);$('built').textContent=window.built;if(window.built===w[2]){finish('சொல் உருவாக்கிவிட்டாய்!');wi++;setTimeout(wordGame,900)}}
+
+function speak(text){if('speechSynthesis'in window){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang='ta-IN';u.rate=.82;speechSynthesis.speak(u)}else toast('உங்கள் உலாவியில் குரல் வசதி இல்லை.')}
+function listenGame(){let target=pictures[Math.floor(Math.random()*pictures.length)];setup('🎧 கேட்டு கண்டுபிடி',`<button class="primary" onclick="speak('${target[1]}')">🔊 சொல்லைக் கேள்</button><div class="question">கேட்ட சொல்லுக்கான படத்தைத் தேர்ந்தெடு.</div><div class="object-grid">${pictures.map(p=>`<button class="object" onclick="pickPicture('${p[1]}','${target[1]}')">${p[0]}<b>${p[1]}</b></button>`).join('')}</div><div id="feedback" class="feedback"></div>`);setTimeout(()=>speak(target[1]),500)}
+
+function readingGame(){setup('📖 வாசிப்பு நகரம்',`<div class="reading-card">இது மாடு.</div><div class="question">சரியான வாக்கியத்தைத் தேர்ந்தெடு.</div><div class="choices"><button class="choice" onclick="readPick(true)">இது மாடு.</button><button class="choice" onclick="readPick(false)">இது மீன்.</button><button class="choice" onclick="readPick(false)">இது பூ.</button></div><div id="feedback" class="feedback"></div>`)}
+function readPick(ok){if(ok){finish('மிகவும் நன்று! நீ வாசிக்கிறாய்!')}else{fail();$('feedback').innerHTML='<span class="wrong">மீண்டும் வாசித்துப் பார்.</span>'}}
+
+function obbyGame(){setup('🏃 தமிழ் OBBY',`<div class="question">சரியான எழுத்துகளில் குதி!</div><p>வரிசையை முடி: <b>அ → ஆ → இ</b></p><div class="choices">${['அ','ம','ஆ','ப','இ','உ'].map(x=>`<button class="choice" onclick="obbyPick('${x}')">${x}</button>`).join('')}</div><div id="feedback" class="feedback"></div>`);window.obby=0}
+function obbyPick(x){let seq=['அ','ஆ','இ'];if(x===seq[window.obby]){window.obby++;reward(5);$('feedback').innerHTML='<span class="correct">⭐ சரியான platform!</span>';if(window.obby===3){celebrate();toast('🏆 OBBY முடிந்தது!');state.level++;updateStats()}}else{fail();$('feedback').innerHTML='<span class="wrong">💨 தவறான platform! மீண்டும் முயற்சி செய்.</span>'}}
+
+const qs={
+Easy:[
+['அ என்ற எழுத்தைத் தேர்ந்தெடு.',['அ','ம','ப'],0],
+['மாட்டைப் பொருத்தமான சொல்லைத் தேர்ந்தெடு.',['மாடு','மீன்','பூ'],0],
+['பூவைக் குறிக்கும் சொல் எது?',['பூ','மாடு','வீடு'],0],
+['ஆடு என்ற சொல்லைத் தேர்ந்தெடு.',['ஆடு','யானை','மரம்'],0],
+['சரியான சொல்லைத் தேர்ந்தெடு.',['மாடு','மீன்','பூ'],0]],
+Medium:[
+['ஆ + டு = ?',['ஆடு','மாடு','ஆமா'],0],
+['சரியான வாக்கியத்தைத் தேர்ந்தெடு.',['இது மாடு.','இது பூ.','இது மீன்.'],0],
+['மாடு என்ற சொல்லின் முதல் எழுத்து எது?',['ம','ப','அ'],0],
+['யானை என்ற சொல்லைத் தேர்ந்தெடு.',['யானை','ஆடு','மாடு'],0],
+['மா + டு = ?',['மாடு','மீடு','மாது'],0]],
+Hard:[
+['சரியான வாக்கியத்தைத் தேர்ந்தெடு.',['மாடு புல் தின்னும்.','மாடு பறக்கும்.','மாடு பாடும்.'],0],
+['சொற்களை சரியான வரிசையில் அமை.',['இது மாடு.','மாடு இது.','இது.'],0],
+['ஆடு என்ற சொல்லுடன் பொருந்தும் படம் எது?',['🐐 ஆடு','🐟 மீன்','🌳 மரம்'],0],
+['வாக்கியத்தில் உள்ள விலங்கு எது? “மாடு புல் தின்னும்.”',['மாடு','புல்','தின்னும்'],0],
+['சரியான வாக்கியத்தைத் தேர்ந்தெடு.',['யானை பெரியது.','யானை சிறியது.','யானை பூ.'],0]]
+};
+let qdiff='Easy',qi=0;
+function quizMenu(){setup('🏰 வினாடி வினா கோட்டை',`<div class="question">சவாலைத் தேர்ந்தெடு</div><div class="choices"><button class="choice" onclick="startQuiz('Easy')">🟢 எளிது<br><small>5 × 5 புள்ளிகள்</small></button><button class="choice" onclick="startQuiz('Medium')">🟡 நடுத்தரம்<br><small>5 × 10 புள்ளிகள்</small></button><button class="choice" onclick="startQuiz('Hard')">🔴 கடினம்<br><small>5 × 20 புள்ளிகள்</small></button></div>`)}
+function startQuiz(d){qdiff=d;qi=0;quizQuestion()}
+function quizQuestion(){let q=qs[qdiff][qi];let pts=qdiff==='Easy'?5:qdiff==='Medium'?10:20;setup('🏰 வினாடி வினா · '+qdiff,`<div class="progress"><div class="bar" style="width:${qi/5*100}%"></div></div><div class="question">${q[0]}</div><div class="choices">${q[1].map((c,i)=>`<button class="choice" onclick="answerQuiz(${i})">${c}</button>`).join('')}</div><div id="feedback" class="feedback">⭐ ${pts} புள்ளிகள்</div>`)}
+function answerQuiz(i){let q=qs[qdiff][qi];if(i===q[2]){reward(qdiff==='Easy'?5:qdiff==='Medium'?10:20);$('feedback').innerHTML='<span class="correct">🎉 சரியான விடை!</span>'}else{fail();$('feedback').innerHTML='<span class="wrong">😊 மீண்டும் முயற்சி செய்!</span>'}qi++;if(qi<5)setTimeout(quizQuestion,800);else setTimeout(victory,900)}
+
+function victory(){let acc=state.answered?Math.round(state.correct/state.answered*100):0;let badge=state.score>=500?'👑 தமிழ் நட்சத்திரம்':state.score>=300?'🏆 தமிழ் சாம்பியன்':state.score>=150?'🥇 தமிழ் வீரன்':state.score>=50?'⭐ தமிழ் நண்பன்':'🌱 தமிழ் தொடக்க வீரர்';setup('🏆 வெற்றி அரங்கம்',`<div class="avatar">🏆</div><div class="question">வாழ்த்துகள்!</div><div class="stats" style="justify-content:center;font-size:20px;margin:20px">⭐ ${state.stars} &nbsp; 💎 ${state.score} &nbsp; 🔥 ${state.streak}</div><div class="reading-card"><b>மதிப்பெண்:</b> ${state.score}<br><b>சரியான விடைகள்:</b> ${state.correct}<br><b>துல்லியம்:</b> ${acc}%<br><b>பதக்கம்:</b> ${badge}<br><b>நிலை:</b> ${state.level}</div><button class="primary" onclick="show('world')">🗺️ மீண்டும் தமிழ் உலகத்திற்குச் செல்</button>`);celebrate()}
+</script>
+</body>
+</html>
